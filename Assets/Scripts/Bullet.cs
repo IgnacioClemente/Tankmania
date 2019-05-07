@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed;
+    [SerializeField] private float speed;
     private string myShooterLayer;
+    [SerializeField] int damage = 5;
 
     private void Update()
     {
@@ -21,9 +22,11 @@ public class Bullet : MonoBehaviour
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == myShooterLayer) return;
 
-        
-        Destroy(other.gameObject);
-        Destroy(gameObject);
-         
+        Health auxHealth = other.GetComponent<Health>();
+        if(auxHealth != null)
+        {
+            auxHealth.TakeDamange(damage);
+            Destroy(gameObject);
+        }
     }
 }
