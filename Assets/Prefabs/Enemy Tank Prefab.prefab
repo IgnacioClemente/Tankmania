@@ -976,7 +976,7 @@ GameObject:
   - component: {fileID: 4356497486514620247}
   m_Layer: 11
   m_Name: Enemy Tank Prefab
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1125,7 +1125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43ae92a22b6cce046b515e0eb78d3a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  HealthBar: {fileID: 0}
+  HealthFill: {fileID: 0}
+  MaxHealth: 0
+  HealthBarYOffset: 2
 --- !u!114 &4356497486514620247
 MonoBehaviour:
   m_ObjectHideFlags: 0

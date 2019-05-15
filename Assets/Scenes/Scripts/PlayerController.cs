@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         fireImage.fillAmount = attack.RemainingCooldown / attack.AttackSpeed;
-        movement.Move(movementJoystick.Direction, this);
+        movement.Move(movementJoystick.Direction);
         attack.Aim(aimJoystick.Direction, this);
     }
 }

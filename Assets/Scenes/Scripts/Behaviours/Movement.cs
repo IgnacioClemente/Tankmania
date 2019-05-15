@@ -7,20 +7,34 @@ public class Movement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
 
+    private PlayerController player;
     private Vector3 myDirection;
+
+    private void Start()
+    {
+        player = GetComponent<PlayerController>();
+    }
 
     private void Update()
     {
         if (myDirection == Vector3.zero) return;
 
-        transform.position += transform.forward * speed * myDirection.magnitude * Time.deltaTime;
+        if (player != null)
+        {
+            transform.position += transform.forward * speed * myDirection.magnitude * Time.deltaTime;
 
-        transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, myDirection, rotationSpeed * Time.deltaTime, 0.0f));
+            transform.Rotate(0,myDirection.x * rotationSpeed,0);
+        }
+        else
+        {
+            transform.position += transform.forward * speed * myDirection.magnitude * Time.deltaTime;
 
+            transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, myDirection, rotationSpeed * Time.deltaTime, 0.0f));
+        }
     }
 
     //Recibo direction del joystick
-    public void Move(Vector3 direction, PlayerController player = null)
+    public void Move(Vector3 direction)
     {
         //Se mueve el player?
         if (player != null)

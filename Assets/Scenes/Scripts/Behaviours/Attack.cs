@@ -10,6 +10,7 @@ public class Attack : MonoBehaviour
     [SerializeField] GameObject head;
     [SerializeField] float headRotation;
     [SerializeField] float attackSpeed;
+    private PlayerController player;
 
     private Vector3 myDirection;
     private float remainingCooldown;
@@ -22,11 +23,20 @@ public class Attack : MonoBehaviour
     private void Awake()
     {
         remainingCooldown = attackSpeed;
+        player = GetComponent<PlayerController>();
     }
 
     private void Update()
     {
-        head.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(head.transform.forward, myDirection, headRotation * Time.deltaTime, 0.0f));
+        if (player != null)
+        {
+            head.transform.Rotate(0, myDirection.x * headRotation, 0);
+            //head.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(head.transform.forward, myDirection, headRotation * Time.deltaTime, 0.0f));
+        }
+        else
+        {
+            head.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(head.transform.forward, myDirection, headRotation * Time.deltaTime, 0.0f));
+        }
 
         if (canShoot) return;
 
