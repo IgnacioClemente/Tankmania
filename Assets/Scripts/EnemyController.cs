@@ -64,4 +64,9 @@ public class EnemyController : MonoBehaviour
     {
         movement.Move((playerTransform.position - transform.position).normalized);
     }
+
+    public void KillMe()
+    {
+        PoolManager.GetInstance().TurnOffByName("Enemy", this.gameObject);
+    }
 }

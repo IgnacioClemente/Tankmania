@@ -8,6 +8,8 @@ public class Health : MonoBehaviour
     //[SerializeField]int health = 20;
     public Transform HealthBar;
     public Slider HealthFill;
+    private EnemyController enemy;
+    private PlayerController player;
 
 
     private float currentHealth;
@@ -17,6 +19,8 @@ public class Health : MonoBehaviour
     private void Awake()
     {
         currentHealth = MaxHealth;
+        player = GetComponent<PlayerController>();
+        enemy = GetComponent<EnemyController>();
     }
 
     private void Update()
@@ -33,7 +37,8 @@ public class Health : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            if (player != null) Destroy(gameObject);
+            else if (enemy != null) enemy.KillMe();
         }
     }
 

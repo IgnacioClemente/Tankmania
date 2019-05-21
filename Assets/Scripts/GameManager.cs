@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerController playerPrefab;
     [SerializeField] Transform playerSpawnPoint;
     [Header("Enemy")]
-    [SerializeField] EnemyController enemyPrefab;
     [SerializeField] EnemySpawnPoint[] EnemySpawnPoints;
     [Header("Wave modifiers")]
     [SerializeField] private int initialWaveAmount;
@@ -20,13 +19,17 @@ public class GameManager : MonoBehaviour
     private int remainingWaveAmount;
     private bool waveInProgress;
 
+    //TODO: añadir enemigos a esta lista al spawnearlos y removerlos al matarlos
+    //Si esta lista está en cero y no quedan enemigos a spawnear, comienza el conteo a la proxima wave
+    private List<EnemyController> _activeEnemies;
+
                 
     // Start is called before the first frame update
     void Start()
     {
         actualWaveAmount = initialWaveAmount;
         remainingWaveAmount = actualWaveAmount;
-        Instantiate(playerPrefab, playerSpawnPoint.position, playerPrefab.transform.rotation);
+        //Instantiate(playerPrefab, playerSpawnPoint.position, playerPrefab.transform.rotation);
 
         StartWave();
     }
@@ -34,8 +37,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
         if (waveInProgress) SpawnEnemies();
     }
 
@@ -52,7 +53,14 @@ public class GameManager : MonoBehaviour
         {
             if (EnemySpawnPoints[i].CanSpawn)
             {
-                EnemyController auxEnemy = Instantiate(enemyPrefab, EnemySpawnPoints[i].transform.position, enemyPrefab.transform.rotation);
+                Debug.Log("a spawnear");
+                remainingWaveAmount--;
+                PoolManager.GetInstance().CallByName("Enemy").transform.position = EnemySpawnPoints[i].transform.position;
+                if (remainingWaveAmount <= 0)
+                {
+                    waveInProgress = false;
+                    return;
+                }
             }
         }
     }
