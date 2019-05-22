@@ -8,6 +8,7 @@ public class Health : MonoBehaviour
     //[SerializeField]int health = 20;
     public Transform HealthBar;
     public Slider HealthFill;
+    public Text HealthText;
     private EnemyController enemy;
     private PlayerController player;
 
@@ -21,6 +22,7 @@ public class Health : MonoBehaviour
         currentHealth = MaxHealth;
         player = GetComponent<PlayerController>();
         enemy = GetComponent<EnemyController>();
+        UpdateHealthBar();
     }
 
     private void Update()
@@ -33,7 +35,9 @@ public class Health : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
 
-        HealthFill.value = currentHealth / MaxHealth;
+        UpdateHealthBar();
+
+        if (enemy != null) enemy.ActivateTookDamage();
 
         if (currentHealth <= 0)
         {
@@ -42,10 +46,20 @@ public class Health : MonoBehaviour
         }
     }
 
+    private void UpdateHealthBar()
+    {
+        HealthFill.value = currentHealth / MaxHealth;
+        if(HealthText != null) HealthText.text = currentHealth + "/" + MaxHealth;
+    }
+
     private void PositionHealthBar()
     {
-        //Vector3 currentpos = transform.position;
-        //HealthBar.position = new Vector3(currentpos.x, currentpos.y + HealthBarYOffset, currentpos.z);
-        HealthBar.LookAt(Camera.main.transform);
+        if(enemy != null) HealthBar.LookAt(Camera.main.transform);
+    }
+
+    public void RestoreHealth()
+    {
+        currentHealth = MaxHealth;
+        HealthFill.value = 1;
     }
 }

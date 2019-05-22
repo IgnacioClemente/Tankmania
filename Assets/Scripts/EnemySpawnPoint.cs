@@ -4,22 +4,48 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
-    //TODO: crear una lista de gameobjects en donde guardo todos los enemigos y players que entran en mi trigger.
-    //Cuando salen (exit) sacarlos de la lista
-    //Si esta lista tiene un count igual a cero, puedo spawnear
-    //Si no, no
-    //Ademas recorrer la lista en el update y preguntar si el objeto esta activo. Si no lo está, sacarlo de la lista
+    private List<GameObject> objectsInRange;
     private bool canSpawn = true;
 
     public bool CanSpawn { get { return canSpawn; } }
 
+    private void Awake()
+    {
+        objectsInRange = new List<GameObject>();
+    }
+
+    private void Update()
+    {
+        if (objectsInRange.Count > 0)
+            canSpawn = false;
+        else
+        {
+            canSpawn = true;
+            return;
+        }
+
+        for (int i = 0; i < objectsInRange.Count; i++)
+        {
+            if (!objectsInRange[i].activeSelf)
+            {
+                objectsInRange.Remove(objectsInRange[i]);
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy") || other.CompareTag("Player")) canSpawn = false;
+        if (other.CompareTag("Enemy") || other.CompareTag("Player"))
+        {
+            objectsInRange.Add(other.gameObject);
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Enemy") || other.CompareTag("Player")) canSpawn = true;
+        if (other.CompareTag("Enemy") || other.CompareTag("Player"))
+        {
+            objectsInRange.Remove(other.gameObject);
+        }
     }
 }

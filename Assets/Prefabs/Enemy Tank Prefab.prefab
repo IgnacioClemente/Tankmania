@@ -1098,7 +1098,7 @@ MonoBehaviour:
   bullet: {fileID: 6445765099318621880, guid: 4f7fa533205a409408c7ba004d4181a8, type: 3}
   shotSpawn: {fileID: 5866215983657535127}
   head: {fileID: 7467198409834228163}
-  headRotation: 2
+  headRotation: 1
   attackSpeed: 2
 --- !u!114 &5866215983179951163
 MonoBehaviour:
@@ -1142,8 +1142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce2398090676ef04fb014de2d0c89b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDistance: 10
-  chaseDistance: 20
+  attackDistance: 25
+  chaseDistance: 30
+  timeToStopChasing: 5
   layersToHit:
     serializedVersion: 2
     m_Bits: 1024

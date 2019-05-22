@@ -1,23 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
+
+public class EnemyDeathEvent : UnityEvent<EnemyController> { }
 
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] float attackDistance = 8;
     [SerializeField] float chaseDistance = 18;
+    [SerializeField] float timeToStopChasing = 5;
     [SerializeField] LayerMask layersToHit;
 
     private Movement movement;
     private Attack attack;
     private Health health;
+    private EnemyDeathEvent onDeathEvent;
 
     private Transform playerTransform;
-    float playerDistance;
-    RaycastHit hit;
+    private float playerDistance;
+    private bool tookDamage;
+    private RaycastHit hit;
+
+    public EnemyDeathEvent OnDeathEvent { get { return onDeathEvent; } }
 
     private void Awake()
     {
+        onDeathEvent = new EnemyDeathEvent();
+
         movement = GetComponent<Movement>();
         attack = GetComponent<Attack>();
         health = GetComponent<Health>();
@@ -35,7 +46,7 @@ public class EnemyController : MonoBehaviour
             {
                 playerDistance = Vector3.Distance(playerTransform.position, transform.position);
 
-                if (playerDistance < chaseDistance)
+                if (tookDamage || playerDistance < chaseDistance)
                 {
                     LookAtPlayer();
 
@@ -44,6 +55,8 @@ public class EnemyController : MonoBehaviour
                     else
                         movement.Move(Vector3.zero);
                 }
+                else
+                    movement.Move(Vector3.zero);
             }
         }
     }
@@ -65,8 +78,25 @@ public class EnemyController : MonoBehaviour
         movement.Move((playerTransform.position - transform.position).normalized);
     }
 
+    public void ActivateTookDamage()
+    {
+        if (tookDamage) return;
+
+        CancelInvoke(nameof(DeactivateTookDamage));
+        tookDamage = true;
+        Invoke(nameof(DeactivateTookDamage), timeToStopChasing);
+    }
+
+    public void DeactivateTookDamage()
+    {
+        tookDamage = false;
+    }
+
     public void KillMe()
     {
+        onDeathEvent.Invoke(this);
+        DeactivateTookDamage();
+        health.RestoreHealth();
         PoolManager.GetInstance().TurnOffByName("Enemy", this.gameObject);
     }
 }

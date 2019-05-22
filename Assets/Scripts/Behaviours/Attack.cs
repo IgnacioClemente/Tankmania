@@ -10,11 +10,13 @@ public class Attack : MonoBehaviour
     [SerializeField] GameObject head;
     [SerializeField] float headRotation;
     [SerializeField] float attackSpeed;
+    [SerializeField] AudioClip attackSound;
     private PlayerController player;
 
     private Vector3 myDirection;
     private float remainingCooldown;
     private bool canShoot = true;
+    private AudioSource audio;
 
     public float AttackSpeed { get { return attackSpeed; } }
     public float RemainingCooldown { get { return remainingCooldown; } }
@@ -22,6 +24,7 @@ public class Attack : MonoBehaviour
 
     private void Awake()
     {
+        audio = GetComponent<AudioSource>();
         remainingCooldown = attackSpeed;
         player = GetComponent<PlayerController>();
     }
@@ -65,7 +68,16 @@ public class Attack : MonoBehaviour
     {
         if (!canShoot) return;
 
-        var auxBullet = Instantiate(bullet, shotSpawn.position, bullet.transform.rotation);
+        var auxBullet = PoolManager.GetInstance().CallByName("Bullet").GetComponent<Bullet>();
+
+        if (auxBullet == null) return;
+
+        if (attackSound != null)
+        {
+            audio.clip = attackSound;
+            audio.Play();
+        }
+        auxBullet.transform.position = shotSpawn.position;
         auxBullet.transform.up = head.transform.forward;
         auxBullet.Spawn(LayerMask.LayerToName(gameObject.layer));
 
