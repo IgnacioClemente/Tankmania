@@ -19,19 +19,20 @@ public class GameManager : MonoBehaviour
     [Header("Wave UI")]
     [SerializeField] Text waveAmountText;
     [SerializeField] Text waveTimerText;
+    [SerializeField] Text killAmount;
+    [SerializeField] Text WaveNumber;
 
     private int waveCounter = 1;
     private int actualWaveAmount;
     private int remainingWaveAmount;
     private float waveTimer;
     private bool waveInProgress;
+    private int enemiesKilled;
+    private int enemiesKilledPerWave;
+
     private List<EnemyController> _activeEnemies;
 
-    //TODO: Score que cuente todos los enemigos matados y los muestre en pantalla
-    //Un valor que cuente los enemigos matados en esta wave y se reinicie al principio de cada wave
-    //Y mostrar en pantalla "Mataste x de y enemigos"
-    //Y mostrar en pantalla el numero de wave
-    //Buscar como formatear el float para que no se vean todos los valores con coma, solo el primer decimal
+    //TODO: mover tiempo para proxima wave al centro superior de la pantalla (ver bien anchors)
 
     private void Awake()
     {
@@ -52,18 +53,19 @@ public class GameManager : MonoBehaviour
         waveTimer = timeBetweenWaves;
         actualWaveAmount = initialWaveAmount;
         remainingWaveAmount = actualWaveAmount;
-        waveAmountText.text = remainingWaveAmount.ToString() + "/" + initialWaveAmount.ToString();
-        waveTimerText.text = "Time to next wave: " + waveTimer.ToString();
+        waveAmountText.text = "Enemies: " + enemiesKilledPerWave.ToString() + "/" + actualWaveAmount.ToString();
+        waveTimerText.text = "";
         waveInProgress = true;
+        WaveNumber.text = "Wave Number " + waveCounter.ToString();
     }
-    
+
     void Update()
     {
         if (waveInProgress) SpawnEnemies();
         else
         {
             waveTimer -= Time.deltaTime;
-            waveTimerText.text = "Time to next wave: " + waveTimer.ToString();
+            waveTimerText.text = "Time to next wave: " + ((int)waveTimer).ToString();
             if (waveTimer <= 0)
             {
                 StartNextWave();
@@ -74,11 +76,14 @@ public class GameManager : MonoBehaviour
     void StartNextWave()
     {
         waveCounter++;
+        WaveNumber.text = "Wave Number " + waveCounter.ToString();
+        enemiesKilledPerWave = 0;
         waveTimer = timeBetweenWaves;
-        waveTimerText.text = "Time to next wave: " + waveTimer.ToString();
         waveInProgress = true;
         actualWaveAmount *= waveAmountMultiplier;
         remainingWaveAmount = actualWaveAmount;
+        waveTimerText.text = "";
+        waveAmountText.text = "Enemies: " + enemiesKilledPerWave.ToString() + "/" + actualWaveAmount.ToString();
     }
 
     void SpawnEnemies()
@@ -106,7 +111,6 @@ public class GameManager : MonoBehaviour
                 auxEnemy.transform.position = EnemySpawnPoints[i].transform.position;
                 _activeEnemies.Add(auxEnemy);
                 remainingWaveAmount--;
-                waveAmountText.text = remainingWaveAmount.ToString() + "/" + initialWaveAmount.ToString();
             }
         }
     }
@@ -114,5 +118,13 @@ public class GameManager : MonoBehaviour
     void DespawnEnemy(EnemyController enemy)
     {
         _activeEnemies.Remove(enemy);
+    }
+
+    public void ScoreUp()
+    {
+        enemiesKilledPerWave++;
+        enemiesKilled++;
+        killAmount.text = "Kills: " + enemiesKilled.ToString();
+        waveAmountText.text = "Enemies: " + enemiesKilledPerWave.ToString() + "/" + actualWaveAmount.ToString();
     }
 }

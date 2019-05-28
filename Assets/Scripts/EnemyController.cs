@@ -80,8 +80,6 @@ public class EnemyController : MonoBehaviour
 
     public void ActivateTookDamage()
     {
-        if (tookDamage) return;
-
         CancelInvoke(nameof(DeactivateTookDamage));
         tookDamage = true;
         Invoke(nameof(DeactivateTookDamage), timeToStopChasing);
@@ -97,6 +95,7 @@ public class EnemyController : MonoBehaviour
         onDeathEvent.Invoke(this);
         DeactivateTookDamage();
         health.RestoreHealth();
+        GameManager.Instance.ScoreUp();
         PoolManager.GetInstance().TurnOffByName("Enemy", this.gameObject);
     }
 }
