@@ -35,4 +35,14 @@ public class SceneManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Loading Menu");
         StartCoroutine(LoadLevelCorroutine(scene));
     }
+
+    public void LoadGame()
+    {
+        LoadScene("Game");
+    }
+
+    public void LoadMenu()
+    {
+        LoadScene("Main Menu");
+    }
 }

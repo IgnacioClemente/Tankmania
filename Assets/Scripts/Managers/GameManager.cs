@@ -21,6 +21,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text waveTimerText;
     [SerializeField] Text killAmount;
     [SerializeField] Text WaveNumber;
+    [Header("Game Over UI")]
+    [SerializeField] private GameObject gameOverCanvas;
+    [SerializeField] private Button playAgainButton;
+    [SerializeField] private Button mainMenuButton;
 
     private int waveCounter = 1;
     private int actualWaveAmount;
@@ -57,6 +61,11 @@ public class GameManager : MonoBehaviour
         waveTimerText.text = "";
         waveInProgress = true;
         WaveNumber.text = "Wave Number " + waveCounter.ToString();
+
+
+        gameOverCanvas.SetActive(false);
+        playAgainButton.onClick.AddListener(SceneManager.Instance.LoadGame);
+        mainMenuButton.onClick.AddListener(SceneManager.Instance.LoadMenu);
     }
 
     void Update()
@@ -65,7 +74,7 @@ public class GameManager : MonoBehaviour
         else
         {
             waveTimer -= Time.deltaTime;
-            waveTimerText.text = "Time to next wave: " + ((int)waveTimer).ToString();
+            waveTimerText.text = "Next wave in " + "\r\n" + ((int)waveTimer).ToString();
             if (waveTimer <= 0)
             {
                 StartNextWave();
@@ -126,5 +135,15 @@ public class GameManager : MonoBehaviour
         enemiesKilled++;
         killAmount.text = "Kills: " + enemiesKilled.ToString();
         waveAmountText.text = "Enemies: " + enemiesKilledPerWave.ToString() + "/" + actualWaveAmount.ToString();
+    }
+
+    public void EndGame()
+    {
+        for (int i = 0; i < _activeEnemies.Count; i++)
+        {
+            PoolManager.GetInstance().TurnOffByName("Enemy", _activeEnemies[i].gameObject);
+        }
+
+        gameOverCanvas.SetActive(true);
     }
 }

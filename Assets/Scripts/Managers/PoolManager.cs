@@ -36,7 +36,7 @@ public class PoolManager : MonoBehaviour {
         {
             Destroy(this.gameObject);
         }
-        DontDestroyOnLoad(transform.gameObject);
+        //DontDestroyOnLoad(transform.gameObject);
         InicializePool();
     }
 

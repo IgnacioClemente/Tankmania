@@ -9,10 +9,12 @@ public class Movement : MonoBehaviour
 
     private PlayerController player;
     private Vector3 myDirection;
+    private float actualSpeed;
 
     private void Start()
     {
         player = GetComponent<PlayerController>();
+        actualSpeed = speed;
     }
 
     private void Update()
@@ -21,13 +23,13 @@ public class Movement : MonoBehaviour
 
         if (player != null)
         {
-            transform.position += transform.forward * speed * myDirection.magnitude * Time.deltaTime;
+            transform.position += transform.forward * actualSpeed * myDirection.z * Time.deltaTime;
 
-            transform.Rotate(0,myDirection.x * rotationSpeed,0);
+            transform.Rotate(0, myDirection.x * rotationSpeed, 0);
         }
         else
         {
-            transform.position += transform.forward * speed * myDirection.magnitude * Time.deltaTime;
+            transform.position += transform.forward * actualSpeed * myDirection.magnitude * Time.deltaTime;
 
             transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, myDirection, rotationSpeed * Time.deltaTime, 0.0f));
         }
@@ -48,5 +50,16 @@ public class Movement : MonoBehaviour
             myDirection.x = direction.x;
             myDirection.z = direction.z;
         }
+    }
+
+    public void IncreaseSpeed (float speedMultiplier, float duration)
+    {
+        actualSpeed *= speedMultiplier;
+        Invoke(nameof(ResetSpeed), duration);
+    }
+
+    public void ResetSpeed()
+    {
+        actualSpeed = speed;
     }
 }

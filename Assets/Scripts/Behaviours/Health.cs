@@ -41,7 +41,7 @@ public class Health : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            if (player != null) Destroy(gameObject);
+            if (player != null) player.KillPlayer();
             else if (enemy != null) enemy.KillMe();
         }
     }
