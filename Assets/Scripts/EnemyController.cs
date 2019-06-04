@@ -22,6 +22,8 @@ public class EnemyController : MonoBehaviour
     private float playerDistance;
     private bool tookDamage;
     private RaycastHit hit;
+    private List<Transform> patrolPoints;
+    private Transform actualPatrolPoint;
 
     public EnemyDeathEvent OnDeathEvent { get { return onDeathEvent; } }
 
@@ -41,23 +43,21 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        if (gameObject.activeSelf) //si esta activo
         {
-            if (gameObject.activeSelf)
+            playerDistance = Vector3.Distance(playerTransform.position, transform.position);// calculo la distancia del player
+
+            if (tookDamage || playerDistance < chaseDistance)// si tome daño o mi distancia es menor que chase distance
             {
-                playerDistance = Vector3.Distance(playerTransform.position, transform.position);
+                LookAtPlayer();//miro al player
 
-                if (tookDamage || playerDistance < chaseDistance)
-                {
-                    LookAtPlayer();
-
-                    if (playerDistance > attackDistance)
-                        ChasePlayer();
-                    else
-                        movement.Move(Vector3.zero);
-                }
+                if (playerDistance > attackDistance)//si la distancia del player es mayor a mi distancia de ataque lo persigo
+                    ChasePlayer();
                 else
                     movement.Move(Vector3.zero);
             }
+            else
+                Patrol();
         }
     }
 
@@ -90,6 +90,13 @@ public class EnemyController : MonoBehaviour
         tookDamage = false;
     }
 
+    public void SetEnemy(List<Transform> patrols, Transform spawnPoint)
+    {
+        patrolPoints = patrols;
+        transform.position = spawnPoint.position;
+        actualPatrolPoint = patrolPoints[Random.Range(0, patrolPoints.Count - 1)];
+    }
+
     public void KillMe()
     {
         onDeathEvent.Invoke(this);
@@ -97,5 +104,26 @@ public class EnemyController : MonoBehaviour
         health.RestoreHealth();
         GameManager.Instance.ScoreUp();
         PoolManager.GetInstance().TurnOffByName("Enemy", this.gameObject);
+    }
+
+    public void Patrol()
+    {
+        if(Vector3.Distance(actualPatrolPoint.position, transform.position) < 2)
+        {
+            actualPatrolPoint = GetNewPatrolPoint();
+        }
+        movement.Move((actualPatrolPoint.position - transform.position).normalized);
+    }
+
+    private Transform GetNewPatrolPoint()
+    {
+        //Busco un random, si es distinto a acualpatrolpoint, lo retorno, si no vuelvo a llamar esta funcion
+        Transform auxPatrolPoint = patrolPoints[Random.Range(0, patrolPoints.Count - 1)];
+        if(auxPatrolPoint == actualPatrolPoint)
+        {
+            auxPatrolPoint = GetNewPatrolPoint();
+        }
+
+        return auxPatrolPoint;
     }
 }

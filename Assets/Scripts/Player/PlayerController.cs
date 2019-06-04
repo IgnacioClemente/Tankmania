@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     Gesture firstSwipe = Gesture.None;
     Gesture previous;
 
+    //TODO: que solo detecte gestos en un area especifica de la pantalla (googlear)
     Gesture gestureDone;
 
     Vector2 ScreenSize;

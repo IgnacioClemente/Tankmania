@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
         waveTimerText.text = "";
         waveInProgress = true;
         WaveNumber.text = "Wave Number " + waveCounter.ToString();
+        killAmount.text = "Kills: 0";
 
 
         gameOverCanvas.SetActive(false);
@@ -116,8 +117,8 @@ public class GameManager : MonoBehaviour
                 if (auxEnemy == null) return;
 
                 auxEnemy.OnDeathEvent.AddListener(DespawnEnemy);
-
-                auxEnemy.transform.position = EnemySpawnPoints[i].transform.position;
+                
+                auxEnemy.SetEnemy(EnemySpawnPoints[i].PatrolPoints, EnemySpawnPoints[i].transform);
                 _activeEnemies.Add(auxEnemy);
                 remainingWaveAmount--;
             }

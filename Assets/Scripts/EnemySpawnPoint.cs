@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
+    private List<Transform> patrolPoints;
     private List<GameObject> objectsInRange;
     private bool canSpawn = true;
 
     public bool CanSpawn { get { return canSpawn; } }
+    public List<Transform> PatrolPoints { get { return patrolPoints; } }
 
     private void Awake()
     {
         objectsInRange = new List<GameObject>();
+        patrolPoints = new List<Transform>();
+        foreach(Transform child in transform)
+        {
+            patrolPoints.Add(child);
+        }
     }
 
     private void Update()
