@@ -10,11 +10,13 @@ public class Attack : MonoBehaviour
     [SerializeField] GameObject head;
     [SerializeField] float headRotation;
     [SerializeField] float attackSpeed;
+    [SerializeField] int damage;
     [SerializeField] AudioClip attackSound;
     private PlayerController player;
 
     private Vector3 myDirection;
     private float remainingCooldown;
+    private int actualDamage;
     private bool canShoot = true;
     private AudioSource audio;
 
@@ -27,6 +29,8 @@ public class Attack : MonoBehaviour
         audio = GetComponent<AudioSource>();
         remainingCooldown = attackSpeed;
         player = GetComponent<PlayerController>();
+
+        actualDamage = damage;
     }
 
     private void Update()
@@ -79,9 +83,20 @@ public class Attack : MonoBehaviour
         }
         auxBullet.transform.position = shotSpawn.position;
         auxBullet.transform.up = head.transform.forward;
-        auxBullet.Spawn(LayerMask.LayerToName(gameObject.layer));
+        auxBullet.Spawn(LayerMask.LayerToName(gameObject.layer), actualDamage);
 
         canShoot = false;
         remainingCooldown = 0;
+    }
+
+    public void IncreaseDamage(int damageMultiplier, float duration)
+    {
+        actualDamage *= damageMultiplier;
+        Invoke(nameof(ResetDamage), duration);
+    }
+
+    public void ResetDamage()
+    {
+        actualDamage = damage;
     }
 }

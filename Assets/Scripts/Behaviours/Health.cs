@@ -9,13 +9,13 @@ public class Health : MonoBehaviour
     public Transform HealthBar;
     public Slider HealthFill;
     public Text HealthText;
-    private EnemyController enemy;
-    private PlayerController player;
-
-
-    private float currentHealth;
     public float MaxHealth;
     public float HealthBarYOffset = 2;
+
+    private EnemyController enemy;
+    private PlayerController player;
+    private float currentHealth;
+    private bool canTakeDamage = true;
 
     private void Awake()
     {
@@ -32,6 +32,8 @@ public class Health : MonoBehaviour
 
     public void TakeDamange(int damage)
     {
+        if (!canTakeDamage) return;
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
 
@@ -61,5 +63,24 @@ public class Health : MonoBehaviour
     {
         currentHealth = MaxHealth;
         HealthFill.value = 1;
+    }
+
+    public void Heal(int extraHealth)
+    {
+        currentHealth += extraHealth;
+        Debug.Log("me cure " + extraHealth);
+        if (currentHealth > MaxHealth) currentHealth = MaxHealth;
+    }
+
+    public void Defense(float duration)
+    {
+        canTakeDamage = false;
+        Debug.Log("Soy inmune " + canTakeDamage);
+        Invoke(nameof(ResetDefense), duration);
+    }
+
+    public void ResetDefense()
+    {
+        canTakeDamage = true;
     }
 }

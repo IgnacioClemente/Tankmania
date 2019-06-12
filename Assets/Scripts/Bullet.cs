@@ -5,20 +5,21 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] int damage = 5;
     [SerializeField] private float timeToExplode = 4;
 
     private string myShooterLayer;
+    private int damage = 5;
 
     private void Update()
     {
         transform.position += transform.up * speed * Time.deltaTime;
     }
 
-    public void Spawn(string shooter)
+    public void Spawn(string shooter, int damage)
     {
         CancelInvoke(nameof(Explode));
         myShooterLayer = shooter;
+        this.damage = damage;
         Invoke(nameof(Explode), timeToExplode);
     }
 
