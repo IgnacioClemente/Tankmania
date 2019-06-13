@@ -70,6 +70,7 @@ public class Health : MonoBehaviour
         currentHealth += extraHealth;
         Debug.Log("me cure " + extraHealth);
         if (currentHealth > MaxHealth) currentHealth = MaxHealth;
+        UpdateHealthBar();
     }
 
     public void Defense(float duration)

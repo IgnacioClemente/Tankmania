@@ -109,16 +109,16 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < EnemySpawnPoints.Length; i++)
         {
             if (remainingWaveAmount <= 0) return;
-
+            
             if (EnemySpawnPoints[i].CanSpawn)
             {
                 var auxEnemy = PoolManager.GetInstance().CallByName("Enemy").GetComponent<EnemyController>();
 
                 if (auxEnemy == null) return;
 
+                EnemySpawnPoints[i].Spawn(auxEnemy);
                 auxEnemy.OnDeathEvent.AddListener(DespawnEnemy);
                 
-                auxEnemy.SetEnemy(EnemySpawnPoints[i].PatrolPoints, EnemySpawnPoints[i].transform);
                 _activeEnemies.Add(auxEnemy);
                 remainingWaveAmount--;
             }

@@ -5,11 +5,10 @@ using UnityEngine;
 public class EnemySpawnPoint : MonoBehaviour
 {
     private List<Transform> patrolPoints;
-    private List<GameObject> objectsInRange;
+    [SerializeField] List<GameObject> objectsInRange;
     private bool canSpawn = true;
 
     public bool CanSpawn { get { return canSpawn; } }
-    public List<Transform> PatrolPoints { get { return patrolPoints; } }
 
     private void Awake()
     {
@@ -40,11 +39,18 @@ public class EnemySpawnPoint : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Spawn(EnemyController enemy)
+    {
+        if(!objectsInRange.Contains(enemy.gameObject)) objectsInRange.Add(enemy.gameObject);
+        enemy.SetEnemy(patrolPoints, transform);
+        canSpawn = false;
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Enemy") || other.CompareTag("Player"))
         {
-            objectsInRange.Add(other.gameObject);
+            if(!objectsInRange.Contains(other.gameObject)) objectsInRange.Add(other.gameObject);
         }
     }
 

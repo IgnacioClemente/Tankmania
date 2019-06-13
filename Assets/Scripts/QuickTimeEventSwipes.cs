@@ -31,7 +31,6 @@ public class QuickTimeEventSwipes : MonoBehaviour
     {
         ///TODO: restringir swipes en el panel
         screenSize = new Vector2(panel.sizeDelta.x, panel.sizeDelta.y);
-        Debug.Log(screenSize);
 
         for (int i = 0; i < arrows.Count; i++)
             arrows[i].gameObject.SetActive(false);
@@ -39,31 +38,33 @@ public class QuickTimeEventSwipes : MonoBehaviour
         Invoke(nameof(QuickTimeEvent), quicktimeCooldown);
     }
 
+
     private void Update()
     {
         if (actualTimeToSwipe <= 0) return;
 
         actualTimeToSwipe -= Time.deltaTime;
 
-        if(actualTimeToSwipe <= 0)
+        if (actualTimeToSwipe <= 0)
         {
             TurnOffArrow();
         }
+    }
 
+    public void InitiateDragCallBack()
+    {
         if (Application.isMobilePlatform)
         {
             if (Input.touchCount > 0)
             {
-                switch (Input.GetTouch(0).phase)
+                for (int i = 0; i < Input.touchCount; i++)
                 {
-                    case TouchPhase.Began:
-                        initialPosition = Input.GetTouch(0).position;
-                        break;
-                    case TouchPhase.Ended:
-                    case TouchPhase.Canceled:
-
-                        endPosition = Input.GetTouch(0).position;
-                        break;
+                    switch (Input.GetTouch(i).phase)
+                    {
+                        case TouchPhase.Began:
+                            initialPosition = Input.GetTouch(0).position;
+                            break;
+                    }
                 }
             }
         }
@@ -73,6 +74,30 @@ public class QuickTimeEventSwipes : MonoBehaviour
             {
                 initialPosition = Input.mousePosition;
             }
+        }
+    }
+
+
+    public void EndDragCallBack()
+    {
+        if (Application.isMobilePlatform)
+        {
+            if (Input.touchCount > 0)
+            {
+                for (int i = 0; i < Input.touchCount; i++)
+                {
+                    switch (Input.GetTouch(i).phase)
+                    {
+                        case TouchPhase.Ended:
+                        case TouchPhase.Canceled:
+                            endPosition = Input.GetTouch(i).position;
+                            break;
+                    }
+                }
+            }
+        }
+        else if (Application.isEditor)
+        {
             if (Input.GetMouseButtonUp(0))
             {
                 endPosition = Input.mousePosition;
@@ -86,8 +111,10 @@ public class QuickTimeEventSwipes : MonoBehaviour
         else
             gestureDone = Gesture.None;
 
+        Debug.Log(gestureDone);
         if (gestureDone != Gesture.None)
         {
+
             //TODO: hacer una clase gesture (nodoswipe?) para que la tengan las flechas y se sepa  el gesto de la flecha activa
             swipe = new NodoSwipe(initialPosition, endPosition, gestureDone);
             if (swipe.Gesture == (Gesture)arrowNumber)
@@ -96,6 +123,7 @@ public class QuickTimeEventSwipes : MonoBehaviour
                 PlayerController.Instance.ActivePower(swipe.Gesture);
                 TurnOffArrow();
             }
+            CleanSwipe();
         }
     }
 
@@ -139,5 +167,14 @@ public class QuickTimeEventSwipes : MonoBehaviour
         arrows[arrowNumber].gameObject.SetActive(false);
 
         Invoke(nameof(QuickTimeEvent), quicktimeCooldown);
+    }
+
+    void CleanSwipe()
+    {
+        gestureDone = Gesture.None;
+        swipe = null;
+        initialPosition = Vector2.zero;
+        endPosition = Vector2.zero;
+        swipeDirection = Vector2.zero;
     }
 }
