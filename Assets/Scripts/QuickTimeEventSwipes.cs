@@ -110,8 +110,7 @@ public class QuickTimeEventSwipes : MonoBehaviour
             gestureDone = DetectGestureBasedOnSwipeDirection(swipeDirection);
         else
             gestureDone = Gesture.None;
-
-        Debug.Log(gestureDone);
+        
         if (gestureDone != Gesture.None)
         {
 

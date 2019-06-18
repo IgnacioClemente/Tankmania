@@ -46,7 +46,7 @@ public class EnemySpawnPoint : MonoBehaviour
         canSpawn = false;
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy") || other.CompareTag("Player"))
         {

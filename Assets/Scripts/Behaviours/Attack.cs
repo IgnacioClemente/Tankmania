@@ -82,7 +82,7 @@ public class Attack : MonoBehaviour
             audio.Play();
         }
         auxBullet.transform.position = shotSpawn.position;
-        auxBullet.transform.up = head.transform.forward;
+        auxBullet.transform.forward = head.transform.forward;
         auxBullet.Spawn(LayerMask.LayerToName(gameObject.layer), actualDamage);
 
         canShoot = false;

@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        transform.position += transform.up * speed * Time.deltaTime;
+        transform.position += transform.forward * speed * Time.deltaTime;
     }
 
     public void Spawn(string shooter, int damage)
@@ -35,6 +35,7 @@ public class Bullet : MonoBehaviour
                     auxHealth.TakeDamange(damage);
                 }
             }
+            print(other.tag + other.gameObject);
             Explode();
         }
     }

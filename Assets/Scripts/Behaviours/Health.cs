@@ -68,7 +68,6 @@ public class Health : MonoBehaviour
     public void Heal(int extraHealth)
     {
         currentHealth += extraHealth;
-        Debug.Log("me cure " + extraHealth);
         if (currentHealth > MaxHealth) currentHealth = MaxHealth;
         UpdateHealthBar();
     }
@@ -76,7 +75,6 @@ public class Health : MonoBehaviour
     public void Defense(float duration)
     {
         canTakeDamage = false;
-        Debug.Log("Soy inmune " + canTakeDamage);
         Invoke(nameof(ResetDefense), duration);
     }
 
