@@ -24,6 +24,7 @@ public class EnemyController : MonoBehaviour
     private RaycastHit hit;
     private List<Transform> patrolPoints;
     private Transform actualPatrolPoint;
+    private GameObject explotion;
 
     public EnemyDeathEvent OnDeathEvent { get { return onDeathEvent; } }
 
@@ -99,11 +100,20 @@ public class EnemyController : MonoBehaviour
 
     public void KillMe()
     {
+        GameManager.Instance.ScoreUp();
+        explotion = PoolManager.GetInstance().CallByName("Explotion");
+        explotion.transform.position = transform.position + new Vector3(0,1,0);
+        Invoke(nameof(TurnOffExplotion), 2);
+
         onDeathEvent.Invoke(this);
         DeactivateTookDamage();
         health.RestoreHealth();
-        GameManager.Instance.ScoreUp();
         PoolManager.GetInstance().TurnOffByName("Enemy", this.gameObject);
+    }
+
+    private void TurnOffExplotion()
+    {
+        PoolManager.GetInstance().TurnOffByName("Explotion", explotion);
     }
 
     public void Patrol()

@@ -11,6 +11,8 @@ public class Attack : MonoBehaviour
     [SerializeField] float headRotation;
     [SerializeField] float attackSpeed;
     [SerializeField] int damage;
+    [SerializeField] private GameObject damageEffect;
+    [SerializeField] ParticleSystem FireEffect;
     [SerializeField] AudioClip attackSound;
     private PlayerController player;
 
@@ -84,6 +86,7 @@ public class Attack : MonoBehaviour
         auxBullet.transform.position = shotSpawn.position;
         auxBullet.transform.forward = head.transform.forward;
         auxBullet.Spawn(LayerMask.LayerToName(gameObject.layer), actualDamage);
+        FireEffect.Play();
 
         canShoot = false;
         remainingCooldown = 0;
@@ -92,11 +95,13 @@ public class Attack : MonoBehaviour
     public void IncreaseDamage(int damageMultiplier, float duration)
     {
         actualDamage *= damageMultiplier;
+        damageEffect.SetActive(true);
         Invoke(nameof(ResetDamage), duration);
     }
 
     public void ResetDamage()
     {
+        damageEffect.SetActive(false);
         actualDamage = damage;
     }
 }

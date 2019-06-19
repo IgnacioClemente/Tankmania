@@ -11,6 +11,9 @@ public class Health : MonoBehaviour
     public Text HealthText;
     public float MaxHealth;
     public float HealthBarYOffset = 2;
+    [Header("PowerUp Effects")]
+    [SerializeField] private ParticleSystem healingEffect;
+    [SerializeField] private GameObject defenseEffect;
 
     private EnemyController enemy;
     private PlayerController player;
@@ -68,18 +71,28 @@ public class Health : MonoBehaviour
     public void Heal(int extraHealth)
     {
         currentHealth += extraHealth;
+        healingEffect.gameObject.SetActive(true);
+        Invoke(nameof(TurnOffHealingEffect), healingEffect.main.duration);
+
         if (currentHealth > MaxHealth) currentHealth = MaxHealth;
         UpdateHealthBar();
+    }
+
+    private void TurnOffHealingEffect()
+    {
+        healingEffect.gameObject.SetActive(false);
     }
 
     public void Defense(float duration)
     {
         canTakeDamage = false;
+        defenseEffect.SetActive(true);
         Invoke(nameof(ResetDefense), duration);
     }
 
     public void ResetDefense()
     {
+        defenseEffect.SetActive(false);
         canTakeDamage = true;
     }
 }

@@ -153,7 +153,7 @@ public class QuickTimeEventSwipes : MonoBehaviour
 
     private void QuickTimeEvent()
     {
-        arrowNumber = Random.Range(0, arrows.Count -1);
+        arrowNumber = Random.Range(0,arrows.Count - 1);
         arrows[arrowNumber].gameObject.SetActive(true);
         actualTimeToSwipe = timeToSwipe;
     }

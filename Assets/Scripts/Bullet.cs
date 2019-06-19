@@ -35,7 +35,6 @@ public class Bullet : MonoBehaviour
                     auxHealth.TakeDamange(damage);
                 }
             }
-            print(other.tag + other.gameObject);
             Explode();
         }
     }

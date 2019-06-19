@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private GameObject speedEffect;
 
     private PlayerController player;
     private Vector3 myDirection;
@@ -55,11 +56,13 @@ public class Movement : MonoBehaviour
     public void IncreaseSpeed (float speedMultiplier, float duration)
     {
         actualSpeed *= speedMultiplier;
+        speedEffect.SetActive(true);
         Invoke(nameof(ResetSpeed), duration);
     }
 
     public void ResetSpeed()
     {
         actualSpeed = speed;
+        speedEffect.SetActive(false);
     }
 }
